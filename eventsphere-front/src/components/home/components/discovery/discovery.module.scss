@@ -1,0 +1,30 @@
+.discovery {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+
+  .logo {
+    width: 60px;
+    height: auto;
+    margin-right: 20px;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 10px;
+  }
+
+  .text {
+    font-size: 16px;
+    color: #666666;
+  }
+}

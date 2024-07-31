@@ -1,0 +1,119 @@
+.mainRegisterPage {
+  display: flex;
+  flex-direction: row;
+
+  .containerRegisterInfos {
+    background-color: #ffa724;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 25%;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+    }
+
+    div {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      height: 25%;
+      width: 80%;
+
+      h2 {
+        color: white;
+        font-size: 2rem;
+      }
+
+      p:nth-of-type(1) {
+        color: black;
+        font-size: 1.2rem;
+        text-align: center;
+      }
+
+      p:nth-of-type(2) {
+        color: white;
+        font-size: 1.2rem;
+      }
+
+      .linkRegisterForm {
+        font-size: 1.2rem;
+        font-style: italic;
+        color: #1066d6;
+        font-weight: bold;
+      }
+    }
+
+  }
+
+  .containerRegisterForm {
+    border-left: 2px solid #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 100%;
+
+    .navRegister {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      width: 30%;
+
+      .linkNavRegister {
+        height: 35px;
+        width: 35px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        background-color: #ffa724;
+      }
+
+      .linkNavRegisterActive {
+        height: 35px;
+        width: 35px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        background-color: #ffa724;
+        border: 1px solid #000;
+      }
+    }
+  }
+
+  @media screen and (max-width: 1023px) {
+    flex-direction: column;
+
+    .containerRegisterForm {
+      width: 100%;
+      border: none;
+    }
+    .containerRegisterInfos {
+      display: none;
+    }
+  }
+
+  
+  @media screen and (min-width: 1024px) and (max-width: 2550px){
+    width: 100%;
+    height: 100%;
+    flex-direction: row
+
+    h2 {
+      display: none;
+    }
+
+    .boxInfosRegisterForm {
+      display: flex;
+      
+    }
+  }
+}

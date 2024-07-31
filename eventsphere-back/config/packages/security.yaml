@@ -1,0 +1,39 @@
+security:
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Entity\ExternalPartner:
+            algorithm: auto
+        App\Entity\User:
+            algorithm: auto
+    providers:
+        api_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+        external_partner_provider:
+            entity:
+                class: App\Entity\ExternalPartner
+                property: email
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        api_login:
+            pattern: ^/login
+            provider: api_user_provider
+            stateless: true
+            custom_authenticators:
+                - App\Security\LoginAuthenticator
+        main:
+            pattern: ^/
+            provider: api_user_provider
+            stateless: true
+            custom_authenticators:
+                - App\Security\APIAuthenticator
+            # logout:
+                # path: app_logout
+                # clear_site_data:
+                #     - cookies
+                #     - storage
+                # target: /
+            # required_badges: ['CsrfTokenBadge', 'My\Badge']

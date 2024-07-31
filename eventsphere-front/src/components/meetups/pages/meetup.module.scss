@@ -1,0 +1,56 @@
+
+
+.mainContent {
+
+  .sectionMeetup {
+
+    position: relative;
+    .containerMeetup {
+    }
+
+    .meetupHeader {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 10px;
+      margin: 0 48px -32px 44px;
+  
+      .btnCreateMeetup {
+  
+        padding: 5px 10px;
+        background-color: #ffa724;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+  
+      .containerHeaderInfos {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+     
+        h1 {
+          font-size: 2rem;
+          color: #333;
+        }
+      
+        .sortDropdown {
+          padding: 10px;
+        }
+      }
+  }
+  
+  
+
+    
+  }
+
+  .meetupGrid {
+
+    
+  }
+}

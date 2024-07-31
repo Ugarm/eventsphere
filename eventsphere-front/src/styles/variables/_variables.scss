@@ -1,0 +1,105 @@
+// ------ Colors ------
+$color-reference-orange: #FF9F0D;
+$black-color: #000000;
+$white-color: #FFFFFF;
+$grey-color: #666666;
+$box-shadow-black: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+// ------ Font Family ------
+$font-family-inter: 'Inter', sans-serif;
+
+// ------ Font weight ------
+$fw-default: 600;
+
+// ------ Font Sizes ------
+$fs-default: 20px;
+$fs-smaller: 16px;
+$fs-small: 12px;
+$fs-large: 24px;
+$fs-larger: 28px;
+$fs-largest: 32px;
+
+// ------ Widths ------
+$w-default: 40px;
+$w-smaller: 36px;
+$w-small: 32px;
+$w-large: 44px;
+$w-larger: 48px;
+$w-full: 100%;
+
+// ------ Heights ------
+$h-default: 40px;
+$h-smaller: 36px;
+$h-small: 32px;
+$h-large: 44px;
+$h-larger: 48px;
+$h-full: 100%;
+
+// ------ Border Radius ------
+$br-default: 16px;
+$br-smaller: 12px;
+$br-small: 8px;
+$br-large: 20px;
+$br-larger: 24px;
+$br-round: 50%;
+
+// ------ Margins ------
+$m-default: 16px;
+$m-smaller: 12px;
+$m-small: 8px;
+$m-large: 20px;
+$m-larger: 24px;
+$m-largest: 32px;
+
+// ------ Margin Left ------
+$ml-default: 16px;
+$ml-smaller: 12px;
+$ml-small: 8px;
+$ml-large: 20px;
+$ml-larger: 24px;
+
+// ------ Margin Right ------
+$mr-default: 16px;
+$mr-smaller: 12px;
+$mr-small: 8px;
+$mr-large: 20px;
+$mr-larger: 24px;
+
+// ------ Margin Top ------
+$mt-default: 16px;
+$mt-smaller: 12px;
+$mt-small: 8px;
+$mt-large: 20px;
+$mt-larger: 24px;
+
+// ------ Margin Bottom ------
+$mb-default: 16px;
+$mb-smaller: 12px;
+$mb-small: 8px;
+$mb-large: 20px;
+$mb-larger: 24px;
+
+// ------ Paddings ------
+$p-default: 12px;
+$p-smaller: 8px;
+$p-small: 4px;
+$p-large: 16px;
+$p-larger: 20px;
+$p-largest: 24px;
+
+// ------ Flexbox Layouts ------
+$flex-direction-row: row;
+$flex-direction-column: column;
+$justify-space-evenly: space-evenly;
+$align-center: center;
+$align-stretch: stretch;
+
+// ------ Media Queries ------
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 992px;
+
+// ------ Display ------
+$display-flex: flex;
+
+// ------ Miscellaneous ------
+$align-items-center: center;

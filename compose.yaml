@@ -1,0 +1,55 @@
+version: '24.0.7'
+
+services:
+  # Service pour le front-end en React
+  front-end:
+    image: node:latest
+    container_name: eventsphere-front
+    volumes:
+      - ./eventsphere-front:/app
+      - /app/node_modules
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev"
+    environment:
+      - NODE_ENV=development
+
+  # Service pour le back-end en PHP
+  back-end:
+    image: php:8.2-apache
+    container_name: eventsphere-back
+    volumes:
+      - ./eventsphere-back/:/var/www
+      - ./eventsphere-back/public/:/var/www/html
+    ports:
+      - "8000:80"
+    environment:
+      - APP_ENV=dev
+
+  # Service pour la base de données PostgreSQL
+  database:
+    image: postgres:latest
+    container_name: eventsphere-db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=eventsphere
+      - POSTGRES_USER=loic
+      - POSTGRES_PASSWORD=#eventspherebdd!
+
+  # Service PgAdmin pour l'interface côté client de PostgreSQL
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: eventsphere-pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    links:
+      - database
+volumes:
+  db-data:

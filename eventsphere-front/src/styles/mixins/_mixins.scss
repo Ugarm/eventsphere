@@ -1,0 +1,43 @@
+// Mixin for setting up a flex container with center alignment
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Mixin for setting up a flex container with space evenly
+@mixin flex-space-evenly {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+// Mixin for applying a full-width container
+@mixin full-width {
+  width: 100%;
+}
+
+// Mixin for flex column layout
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Mixin for flex row layout
+@mixin flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+// Mixin for applying responsive media queries
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == 'mobile' {
+    @media (max-width: $breakpoint-mobile) {
+      @content;
+    }
+  } @else if $breakpoint == 'tablet' {
+    @media (max-width: $breakpoint-tablet) {
+      @content;
+    }
+  }
+}
