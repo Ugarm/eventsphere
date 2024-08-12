@@ -61,7 +61,7 @@ class LoginController extends AbstractController
     //     );
     // }
 
-    #[Route('/login', name: 'api_login', methods: ['POST'])]
+    #[Route('/api/login', name: 'api_login', methods: ['POST'])]
     public function login(Request $request, UserInterface $userInterface): JsonResponse
     {
         $request = json_decode($request->getContent());
@@ -71,7 +71,10 @@ class LoginController extends AbstractController
         ];
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
 
-        if (password_verify($credentials['password'], $user->getPassword())) {
+        if ($credentials['password'] === $user->getPassword()) {
+                // TODO : Vérifier le password avec la méthode password_verify($pass)
+                // La méthode ne fonctionne qu'avec un password hash en db
+
                 $token = $this->jwtManager->create($user);
                 // $bearerToken = 'Bearer ' . $token;
 
@@ -102,7 +105,7 @@ class LoginController extends AbstractController
         }
     }
 
-    #[Route('/logout', name: 'app_logout', methods: ['GET', 'POST'])]
+    #[Route('/api/logout', name: 'app_logout', methods: ['GET', 'POST'])]
     public function logout(Request $request, Security $security): JsonResponse
     {
 

@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Entity\ExternalPartner;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,16 +39,15 @@ class APIAuthenticator extends AbstractAuthenticator
             throw new CustomUserMessageAuthenticationException('No API token provided');
         }
 
-        $userIdentifier = $this->entityManager->getRepository(ExternalPartner::class)->findOneBy([
+        $userIdentifier = $this->entityManager->getRepository(User::class)->findOneBy([
             'token' => str_replace('Bearer ', '', $request->headers->get('Authorization'))
         ]);
-
 
         if (null === $userIdentifier) {
             throw new CustomUserMessageAuthenticationException('API token could not be found');
         }
 
-        $identifier = $userIdentifier->getPartnername();
+        $identifier = $userIdentifier->getUserIdentifier();
 
         return new SelfValidatingPassport(new UserBadge($identifier));
     }
