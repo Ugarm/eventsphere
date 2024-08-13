@@ -44,6 +44,9 @@ class RegistrationController extends AbstractController
     public function register(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         $userData = json_decode($request->getContent(), true);
+
+
+
         $user = new User();
 
         if (!isset($userData['email']) || !isset($userData['password']) || !isset($userData['firstname']) || !isset($userData['lastname']) || !isset($userData['city']) || !isset($userData['postal_code'])) {

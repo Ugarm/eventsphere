@@ -3,6 +3,7 @@
 namespace App\Controller\API;
 
 use App\Entity\User;
+use App\Managers\SessionManager;
 use App\Security\APIAuthenticator;
 use App\Security\LoginAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,11 +12,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class LoginController extends AbstractController
 {
@@ -24,14 +25,15 @@ class LoginController extends AbstractController
     private $apiAuthenticator;
     private $entityManager;
     private $tokenStorage;
+    private $eventSphereManagers;
 
     public function __construct(
         JWTTokenManagerInterface                $jwtManager,
         LoginAuthenticator                      $loginAuthenticator,
         APIAuthenticator                        $apiAuthenticator,
         EntityManagerInterface                  $entityManager,
-        TokenStorageInterface                   $tokenStorage
-        
+        TokenStorageInterface                   $tokenStorage,
+        SessionManager                          $eventSphereManagers,
         )
     {
         $this->jwtManager = $jwtManager;
@@ -39,95 +41,66 @@ class LoginController extends AbstractController
         $this->apiAuthenticator = $apiAuthenticator;
         $this->entityManager = $entityManager;
         $this->tokenStorage = $tokenStorage;
+        $this->eventSphereManagers = $eventSphereManagers;
     }
 
-    // #[Route('/login', name: 'api_login', methods: ['POST'])]
-    // public function index(#[CurrentUser] ?User $user): Response
-    // {
-    //     if (null === $user) {
-    //         return $this->json([
-    //             'message' => 'missing credentials',
-    //         ], Response::HTTP_UNAUTHORIZED);
-    //     }
+     #[Route('/api/login', name: 'api_login', methods: ['POST'])]
+     public function index(#[CurrentUser] ?User $user): Response
+     {
+         if (null === $user) {
+             return $this->json([
+                 'message' => 'missing credentials',
+             ], Response::HTTP_UNAUTHORIZED);
+         }
 
-    //     $token = $this->jwtManager->create($user);
-
-    //     return $this->json($this->getUser(), 200, [
-    //             'Authorization' => $token
-    //         ],
-    //         [
-    //             'groups' => ['users.read'],
-    //         ]
-    //     );
-    // }
+         return $this->json($this->getUser(), 200, [
+                 'Authorization' => $token
+             ],
+             [
+                 'groups' => ['users.read'],
+             ]
+         );
+     }
 
     #[Route('/api/login', name: 'api_login', methods: ['POST'])]
-    public function login(Request $request, UserInterface $userInterface): JsonResponse
+    public function login(Request $request): JsonResponse
     {
-        $request = json_decode($request->getContent());
-        $credentials = [
-            'email' => $request->email,
-            'password' => $request->password
-        ];
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
+        // Executes login method
+        try {
+        $response = $this->eventSphereManagers->login(json_decode($request->getContent()));
+        } catch (\Exception $e) {
+        return new JsonResponse([
+            'code' => $e->getCode(),
+            'message' => $e->getMessage()
+        ]);
+        }
 
-        if ($credentials['password'] === $user->getPassword()) {
-                // TODO : Vérifier le password avec la méthode password_verify($pass)
-                // La méthode ne fonctionne qu'avec un password hash en db
+        // Returns the right data if everything is alright, else returns an error
+        if ($response){
 
-                $token = $this->jwtManager->create($user);
-                // $bearerToken = 'Bearer ' . $token;
-
-                try {
-                    $user->setToken($token);
-                    $this->entityManager->persist($user);
-                    $this->entityManager->flush();
-                } catch (\Exception $e) {
-                    return new JsonResponse([
-                        'code' => $e->getCode(),
-                        'message' => $e->getMessage()
-                    ]);
-                }
-
-                // return new JsonResponse(['token' => $bearerToken], Response::HTTP_OK, ['Authorization' => $bearerToken]);
-                return $this->json([
-                    "user" => $this->getUser(),
-                    "token" => $token
-                ], 200, [
-                    'Authorization' => $token
-                    ],
-                    [
-                    'groups' => ['users.read'],
-                    ]
-                );
+            return $this->json([
+                "user" => $response['user'],
+                "token" => $response['token']
+            ], 200, [
+                  'Authorization' => $response['token']
+            ],
+            [
+                  'groups' => ['users.read'],
+            ]
+            );
         } else {
-            throw new BadCredentialsException('User or password incorrect.');
+
+            return throw new BadCredentialsException('User or password incorrect.');
         }
     }
 
     #[Route('/api/logout', name: 'app_logout', methods: ['GET', 'POST'])]
-    public function logout(Request $request, Security $security): JsonResponse
+    public function logout(Request $request): JsonResponse
     {
-
+        // fetches user token and unlog them
         $token = $request->headers->get('Authorization');
 
-        $currentUser = $this->entityManager->getRepository(User::class)->findOneBy([
-            'token' => $token
-        ]);
-            
-            try {
-            $currentUser->setToken(null);
-            $this->entityManager->persist($currentUser);
-            $this->entityManager->flush();
-            
-            return new JsonResponse(['message' => 'User logged out successfully.'], Response::HTTP_OK);
-
-        } catch (\Exception $e) {
-
-            return new JsonResponse(['code' => $e->getMessage(), 'message' => 'Something\'s wrong.'], Response::HTTP_OK);
-        } 
-            
-        return new JsonResponse(['Oops' => 'Bad luck'], Response::HTTP_BAD_REQUEST, ['Message' => 'Something\'s wrong']);
+        return $this->eventSphereManagers->logout($token, json_decode($request->getContent()));
     }
 
 }
