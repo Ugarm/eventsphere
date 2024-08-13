@@ -7,7 +7,6 @@ use App\Managers\SessionManager;
 use App\Security\APIAuthenticator;
 use App\Security\LoginAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,15 +24,15 @@ class LoginController extends AbstractController
     private $apiAuthenticator;
     private $entityManager;
     private $tokenStorage;
-    private $eventSphereManagers;
+    private $sessionManager;
 
     public function __construct(
-        JWTTokenManagerInterface                $jwtManager,
-        LoginAuthenticator                      $loginAuthenticator,
-        APIAuthenticator                        $apiAuthenticator,
-        EntityManagerInterface                  $entityManager,
-        TokenStorageInterface                   $tokenStorage,
-        SessionManager                          $eventSphereManagers,
+        JWTTokenManagerInterface $jwtManager,
+        LoginAuthenticator       $loginAuthenticator,
+        APIAuthenticator         $apiAuthenticator,
+        EntityManagerInterface   $entityManager,
+        TokenStorageInterface    $tokenStorage,
+        SessionManager           $sessionManager,
         )
     {
         $this->jwtManager = $jwtManager;
@@ -41,7 +40,7 @@ class LoginController extends AbstractController
         $this->apiAuthenticator = $apiAuthenticator;
         $this->entityManager = $entityManager;
         $this->tokenStorage = $tokenStorage;
-        $this->eventSphereManagers = $eventSphereManagers;
+        $this->sessionManager = $sessionManager;
     }
 
      #[Route('/api/login', name: 'api_login', methods: ['POST'])]
@@ -67,7 +66,7 @@ class LoginController extends AbstractController
     {
         // Executes login method
         try {
-        $response = $this->eventSphereManagers->login(json_decode($request->getContent()));
+        $response = $this->sessionManager->login(json_decode($request->getContent()));
         } catch (\Exception $e) {
         return new JsonResponse([
             'code' => $e->getCode(),
@@ -100,7 +99,7 @@ class LoginController extends AbstractController
         // fetches user token and unlog them
         $token = $request->headers->get('Authorization');
 
-        return $this->eventSphereManagers->logout($token, json_decode($request->getContent()));
+        return $this->sessionManager->logout($token, json_decode($request->getContent()));
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Managers;
 
+use App\DBAL\UserType;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -10,7 +11,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 
 class SessionManager extends AbstractController
 {
@@ -29,22 +29,18 @@ class SessionManager extends AbstractController
             'password' => $request->password
         ];
 
-        if (empty($credentials['email']) || empty($credentials['password'])) {
+        if (empty($credentials[UserType::EMAIL]) || empty($credentials[UserType::PASSWORD])) {
             throw new BadRequestHttpException('Email and password must be provided.');
         }
 
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
+        $user = $this->entityManager->getRepository(User::class)->findOneBy([UserType::EMAIL => $credentials[UserType::EMAIL]]);
 
         if (!$user) {
             throw new NotFoundHttpException('User not found.');
         }
 
 
-        if ($credentials['password'] === $user->getPassword()) {
-            // TODO : Vérifier le password avec la méthode password_verify($pass)
-            // La méthode ne fonctionne qu'avec un password hash en db
-//            password_verify($credentials['password'], $user->getPassword())
-
+        if (password_verify($credentials[UserType::PASSWORD], $user->getPassword())) {
             $token = $this->jwtManager->create($user);
 
             $user->setToken($token);
