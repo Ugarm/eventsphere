@@ -15,21 +15,6 @@ class UserType extends EnumType
     public const IP_ADDRESS = 'ip_address';
     public const PASSWORD = 'password';
 
-    public function getGroup(): array
-    {
-        return [
-            self::EMAIL,
-            self::LASTNAME,
-            self::FIRSTNAME,
-            self::NICKNAME,
-            self::PARTNER_NAME,
-            self::ADDRESS,
-            self::CITY,
-            self::POSTAL_CODE,
-            self::IP_ADDRESS,
-            self::PASSWORD,
-        ];
-    }
 }
 
 

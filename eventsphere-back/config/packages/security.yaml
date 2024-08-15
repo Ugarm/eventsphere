@@ -19,13 +19,13 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         api_login:
-            pattern: ^/login
+            pattern: ^/api/login
             provider: api_user_provider
             stateless: true
             custom_authenticators:
                 - App\Security\LoginAuthenticator
         main:
-            pattern: ^/
+            pattern: /api
             provider: api_user_provider
             stateless: true
             custom_authenticators:

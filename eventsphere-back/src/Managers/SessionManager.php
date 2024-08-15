@@ -44,8 +44,8 @@ class SessionManager extends AbstractController
             throw new BadRequestHttpException('Email and password must be provided.');
         }
 
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'test0@test.com']);
-        dd('lol');
+        $user = $this->entityManager->getRepository(User::class)->findOneBy([UserType::EMAIL => $credentials[UserType::EMAIL]]);
+
         if (!$user) {
             throw new NotFoundHttpException('User not found.');
         }

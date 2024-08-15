@@ -31,13 +31,13 @@ class RegistrationManager extends AbstractController
         $this->dataValidator = $dataValidator;
     }
 
-    public function Register($userData): bool|JsonResponse {
-        $user = new User();
-
+    public function register($userData): bool|JsonResponse {
         if (!$this->verifyRequiredData($userData)) {
 
             return new JsonResponse(['message' => 'Missing required fields.'], Response::HTTP_BAD_REQUEST);
         }
+
+        $user = new User();
 
         if ($this->dataValidator->registrationDataValidation($userData)) {
             $hashedPassword = $this->passwordHasher->hashPassword(

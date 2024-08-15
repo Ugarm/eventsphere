@@ -49,12 +49,12 @@ class RegistrationController extends AbstractController
     {
         $userData = json_decode($request->getContent(), true);
 
-        if ($response = $this->registrationManager->Register($userData)) {
+        if ($response = $this->registrationManager->register($userData)) {
 
             return $response;
         } else {
 
-            throw new BadRequestHttpException('Something went wrong.');
+            return $this->registrationManager->register($userData);
         }
     }
 
