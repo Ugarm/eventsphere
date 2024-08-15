@@ -23,6 +23,17 @@ class SessionManager extends AbstractController
         $this->jwtManager = $jwtManager;
     }
 
+    public function utf8ize( $mixed ) {
+        if (is_array($mixed)) {
+            foreach ($mixed as $key => $value) {
+                $mixed[$key] = $this->utf8ize($value);
+            }
+        } elseif (is_string($mixed)) {
+            return mb_convert_encoding($mixed, "UTF-8", "UTF-8");
+        }
+        return $mixed;
+    }
+
     public function login($request): bool|array {
         $credentials = [
             'email' => $request->email,
@@ -33,14 +44,15 @@ class SessionManager extends AbstractController
             throw new BadRequestHttpException('Email and password must be provided.');
         }
 
-        $user = $this->entityManager->getRepository(User::class)->findOneBy([UserType::EMAIL => $credentials[UserType::EMAIL]]);
-
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'test0@test.com']);
+        dd('lol');
         if (!$user) {
             throw new NotFoundHttpException('User not found.');
         }
 
 
         if (password_verify($credentials[UserType::PASSWORD], $user->getPassword())) {
+
             $token = $this->jwtManager->create($user);
 
             $user->setToken($token);
