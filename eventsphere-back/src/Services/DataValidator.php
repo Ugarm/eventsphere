@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DBAL\UserType;
 use DateTimeImmutable;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
@@ -122,7 +123,7 @@ class DataValidator
     {
         $validator = Validation::createValidator();
 
-        if ($pw = $data['password']) {
+        if ($pw = $data[UserType::PASSWORD]) {
             $violations = $validator->validate($pw, [
                 new Length(['min' => 8]),
                 new NotCompromisedPassword(),
@@ -133,7 +134,7 @@ class DataValidator
             $this->violationHandler($violations, ' Mot de passe : ');
         }
 
-        if ($lastname = $data['lastname']) {
+        if ($lastname = $data[UserType::LASTNAME]) {
             $violations = $validator->validate($lastname, [
                 new Length(['min' => 2]),
                 // new NoSuspiciousCharacters(),
@@ -142,7 +143,7 @@ class DataValidator
             $this->violationHandler($violations, 'Nom : ');
         }
 
-        if ($firstname = $data['firstname']) {
+        if ($firstname = $data[UserType::FIRSTNAME]) {
 
             $violations = $validator->validate($firstname, [
                 new Length(['min' => 2]),
@@ -152,7 +153,7 @@ class DataValidator
             $this->violationHandler($violations, ' Prénom : ');
         }
 
-        if ($nickname = $data['nickname']) {
+        if ($nickname = $data[UserType::NICKNAME]) {
 
             $violations = $validator->validate($nickname, [
                 new Length(['min' => 2]),
@@ -162,7 +163,7 @@ class DataValidator
             $this->violationHandler($violations, 'Pseudo : ');
         }
 
-        if ($email = $data['email']) {
+        if ($email = $data[UserType::EMAIL]) {
             $violations = $validator->validate($email, [
                 new Length(['min' => 8]),
                 // new NoSuspiciousCharacters(),
@@ -172,7 +173,7 @@ class DataValidator
             $this->violationHandler($violations, 'Email : ');
         }
 
-        if ($city = $data['city']) {
+        if ($city = $data[UserType::CITY]) {
             $violations = $validator->validate($city, [
                 new Length(['min' => 2]),
                 // new NoSuspiciousCharacters(),

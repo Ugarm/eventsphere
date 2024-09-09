@@ -32,7 +32,7 @@ class APIAuthenticator extends AbstractAuthenticator
 
     public function authenticate(Request $request): Passport
     {
-        $apiToken = $request->headers->get('Authorization');
+        $apiToken = str_replace('Bearer ', '', $request->headers->get('Authorization'));
 
         if (null === $apiToken) {
 
@@ -40,7 +40,7 @@ class APIAuthenticator extends AbstractAuthenticator
         }
 
         $userIdentifier = $this->entityManager->getRepository(User::class)->findOneBy([
-            'token' => str_replace('Bearer ', '', $request->headers->get('Authorization'))
+            'token' => $apiToken
         ]);
 
         if (null === $userIdentifier) {
@@ -65,5 +65,5 @@ class APIAuthenticator extends AbstractAuthenticator
             'location' => 'API authentication'
         ], Response::HTTP_UNAUTHORIZED);
     }
-    
+
 }
