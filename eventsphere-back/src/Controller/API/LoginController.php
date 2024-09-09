@@ -43,23 +43,6 @@ class LoginController extends AbstractController
         $this->sessionManager = $sessionManager;
     }
 
-     #[Route('/api/login', name: 'api_login', methods: ['POST'])]
-     public function index(#[CurrentUser] ?User $user): Response
-     {
-         if (null === $user) {
-             return $this->json([
-                 'message' => 'missing credentials',
-             ], Response::HTTP_UNAUTHORIZED);
-         }
-
-         return $this->json($this->getUser(), 200, [
-                 'Authorization' => $token
-             ],
-             [
-                 'groups' => ['users.read'],
-             ]
-         );
-     }
 
     #[Route('/api/login', name: 'api_login', methods: ['POST'])]
     public function login(Request $request): JsonResponse

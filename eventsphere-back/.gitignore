@@ -1,4 +1,3 @@
-
 ###> symfony/framework-bundle ###
 .env
 /.env.local
@@ -15,3 +14,13 @@
 ###< lexik/jwt-authentication-bundle ###
 config/packages/lexik_jwt_authentication.yaml
 config/packages/nelmio_cors.yaml
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###

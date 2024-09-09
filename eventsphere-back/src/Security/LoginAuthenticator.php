@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -18,7 +19,7 @@ use Symfony\Component\Validator\Constraints\Json;
 
 class LoginAuthenticator extends AbstractAuthenticator
 {
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
     public function __construct(
         EntityManagerInterface      $entityManager,
     ) {
@@ -27,48 +28,44 @@ class LoginAuthenticator extends AbstractAuthenticator
     // Methods to know if authentication is supported
     public function supports(Request $request): ?bool
     {
-        $user = $this->entityManager->getRepository(User::class)->findOneBy([
+        if ($user = $this->entityManager->getRepository(User::class)->findOneBy([
             'email' => json_decode($request->getContent())->email
-        ]);
-
-        if ($user) {
+        ])) {
 
             return json_decode($request->getContent())->email && password_verify(json_decode($request->getContent())->password, $user->getPassword());
-        } else {
-            $user = $this->entityManager->getRepository(ExternalPartner::class)->findOneBy([
-                'email' => json_decode($request->getContent())->email
-            ]);
+        } elseif ($user = $this->entityManager->getRepository(ExternalPartner::class)->findOneBy([
+            'email' => json_decode($request->getContent())->email
+        ])) {
 
             return json_decode($request->getContent())->email && password_verify(json_decode($request->getContent())->password, $user->getPassword());
         }
 
+        throw new BadRequestHttpException("Something\'s wrong.");
     }
 
     public function authenticate(Request $request): Passport
     {
-        $currentUser = $this->entityManager->getRepository(User::class)->findOneBy([
-            'email' => json_decode($request->getContent())->email
-        ]);
 
-        if ($currentUser) {
+
+        if ($currentUser = $this->entityManager->getRepository(User::class)->findOneBy([
+            'email' => json_decode($request->getContent())->email
+        ])) {
             $identifier = $currentUser->getUserIdentifier();
 
             // TODO : Ajouter l'enum "UserType::IS_CONNECTED"
             return new SelfValidatingPassport(
                 new UserBadge($identifier)
             );
-        } else {
-            $currentPartner = $this->entityManager->getRepository(ExternalPartner::class)->findOneBy([
-                'email' => json_decode($request->getContent())->email
-            ]);
-
-            dump($currentPartner);
+        } elseif ($currentPartner = $this->entityManager->getRepository(ExternalPartner::class)->findOneBy([
+            'email' => json_decode($request->getContent())->email
+        ])) {
             $identifier = $currentPartner->getUserIdentifier();
-            dump($identifier);
             return new SelfValidatingPassport(
                 new UserBadge($identifier)
             );
         }
+
+        throw new BadRequestHttpException("Something\'s wrong.");
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
